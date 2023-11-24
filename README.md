@@ -2,6 +2,8 @@
 ## Introduction
 It's a Twitter-like social network website for making posts and following users.
 
+![display](https://github.com/jim37500/network/blob/main/deplay/display.png)
+
 
 ## Getting Started
 1. In your terminal, cd into the project4 directory.
