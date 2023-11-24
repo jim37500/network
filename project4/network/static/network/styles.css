@@ -1,0 +1,39 @@
+.post-content {
+    font-size: 16px;
+}
+
+.post-time {
+    font-size: 12px;
+}
+
+.post-datas {
+    font-size: 12px;
+}
+
+.user-container {
+    display: flex;
+    align-items: center;
+}
+
+.user-title {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.invisible {
+    display: none;
+}
+
+
+.comment-author {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.comment-content {
+    font-size: 14px;
+}
+
+.require-login-text {
+    font-size: 12px;
+}

@@ -1,0 +1,107 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="mx-3 my-3">
+        <h3>All Posts</h3>
+        {% if user.is_authenticated %}
+            <div class="border rounded px-3 py-3">
+                <h5>New Post</h5>
+                <form method="POST" action="{% url 'post' %}">
+                    {% csrf_token %}
+                    <textarea class="form-control" name="content" rows="3"></textarea>
+                    <button class="btn btn-primary mt-2" type="submit">Post</button>
+                </form>
+            </div>
+        {% endif %}
+        <hr/>
+        {% for post in posts %}
+            <div class="border rounded px-3 py-3 mt-3">      
+                <h5><a href="{% url 'profile' post.user %}" class="text-dark">{{ post.user }}</a></h5>
+                {% if user == post.user %}
+                    <div id='post-id{{ post.id }}'></div>
+                    <button type="button" class="btn btn-secondary btn-sm js-edit-btn my-1" data-post-id="{{ post.id|safe }}">Edit</button>
+                {% endif %}
+
+                <div class="post-content" id='post-id{{ post.id }}-content'>{{ post.content }}</div>
+                <div class="post-time text-secondary" id='post-id{{ post.id }}-time'>{{ post.create_time }}</div>
+                <div class="post-datas mt-2 text-info">
+                    <span id="post-id{{ post.id }}-count-likes">{{ post.likes }} Likes</span>
+                    <span class="ml-1"><span id="post-id{{ post.id }}-count-comments">{{ post.comments }}</span> Comments</span>
+                </div>
+                
+                {% if user.is_authenticated %}
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                        {% for like in likes %}
+                            {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                                <button type="button" class="btn btn-outline-primary js-like-btn" data-post-id="{{ post.id|safe }}">{{ like }}</button>
+                            {% endif %}
+                        {% endfor %}
+                        <button type="button" class="btn btn-outline-primary js-comment-btn" data-post-id="{{ post.id|safe }}">Comment</button>
+                    </div>
+                {% else %}
+                    <div class="text-warning require-login-text mt-1">Log in to like and comment on the post.</div>
+                {% endif %}
+
+                <div class="invisible mt-2" id="post-id{{ post.id }}-comments">
+                    {% for comments in comments_list %}
+                        {% if forloop.counter0 == forloop.parentloop.counter0 %}
+                            {% for comment in comments %}
+                                <div class="border rounded px-2 py-2 mt-2">
+                                    <div><a href="{% url 'profile' post.user %}" class="text-dark comment-author">{{ comment.user }}</a></div>
+                                    <div class="comment-content">{{ comment.content }}</div>
+                                    <div class="post-time text-secondary">{{ comment.create_time }}</div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="mt-2" id="post-id{{ post.id }}-add-comment"></div>
+                  
+            </div>
+        {% endfor %}
+        
+        <nav aria-label="..." class="mt-3">
+            <ul class="pagination">
+                <li class="page-item">
+                    {% if posts.has_previous %}
+                        <a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>
+                    {% endif %}
+                </li> 
+
+                {% for page_num in posts.paginator.page_range %}
+                    {% if posts.number == page_num %}
+                        <li class="page-item active" aria-current="page">
+                                <span class="page-link">
+                                    {{ page_num }}
+                                <span class="sr-only">(current)</span>
+                            </span>
+                        </li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+                    {% endif %}
+                    
+                {% endfor %}
+                <li class="page-item">
+                    {% if posts.has_next %}
+                        <a class="page-link" href="?page={{ posts.next_page_number }}">Next</a>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+{% endblock %}
+
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+{% endblock %}
